@@ -1,22 +1,40 @@
 var casper = require('casper').create();
-casper.start('http://hemnet.se', function()
-	     {
-		 casper.viewport(1500, 1080);
-		 this.echo("in 1st step");
-		 this.mouseEvent('click', 'a[class="dropdowns-action"]');
-		 this.capture('1nd.png',{top:0, left:0, width:800, height:1024})
-		 this.fill('form[action="/sok/create"]',
-			   {'search\[region_id\]': '17744'},
-			   false);
-		 this.mouseEvent('click', 'button[name="commit"]');
-	     });
+var links = [];
 
+function getLinks() {
+    var links = document.querySelectorAll('.item-link-container');
+    return Array.prototype.map.call(links, function(e) {
+	var v = e.getAttribute('href');
+	return v;
+    });
+}
 
-casper.then(function() {
-    this.echo("in 2nd step");
-    this.echo(this.getTitle());
-    this.capture('2nd.png',{top:0, left:0, width:800, height:1024})
+var follow_next_button = function() {
+    links = links.concat(this.evaluate(getLinks));
+    if (this.exists('a[class="next_page button button--primary"]'))
+    {
+	this.thenClick('a[class="next_page button button--primary"]',
+		       function() {this.then(follow_next_button);});
+    } else {
+	this.echo("follow button finished!");
+    }
+};
+
+casper.start('http://hemnet.se', function() {
+    casper.viewport(1500, 1080);
+    this.mouseEvent('click', 'a[class="dropdowns-action"]');
+    this.fillXPath('form[action="/sok/create"]', {
+	//'//select[@id="search_region_id"]': '17744', //stockholm
+	'//input[@id="search_municipality_ids_18028"]': true //solna
+    },false);
+
+    this.mouseEvent('click', 'button[name="commit"]');
 });
 
-	     
-casper.run();
+casper.then(follow_next_button);
+
+casper.run(function() {
+    this.echo(links.length + ' links found:');
+    this.echo(' - ' + links.join('\n - ')).exit();
+    this.exit();
+});
