@@ -16,7 +16,7 @@ var follow_next_button = function() {
 	this.thenClick('a[class="next_page button button--primary"]',
 		       function() {this.then(follow_next_button);});
     } else {
-	this.echo("follow button finished!");
+	this.log("follow button finished!",'debug');
     }
 };
 
@@ -34,7 +34,14 @@ casper.start('http://hemnet.se', function() {
 casper.then(follow_next_button);
 
 casper.run(function() {
-    this.echo(links.length + ' links found:');
-    this.echo(' - ' + links.join('\n - ')).exit();
+    this.log(links.length + ' links found:','info');
+
+    links = links.map(function(link) {
+	return 'www.hemnet.net'+link
+    });
+
+    this.echo(links.join('\n'));
+    
     this.exit();
+
 });
