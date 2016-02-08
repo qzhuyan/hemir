@@ -37,7 +37,7 @@ casper.run(function() {
     this.log(links.length + ' links found:','info');
 
     links = links.map(function(link) {
-	return 'www.hemnet.net'+link
+	return 'http://www.hemnet.se'+link
     });
 
     this.echo(links.join('\n'));
