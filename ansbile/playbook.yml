@@ -23,16 +23,12 @@
     - name: add ezhuwya to docker group
       user: name=ezhuwya groups=docker,sudo
 
+    - name: jenkins key
+      command: sh -c 'wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key |  apt-key add -'
 
-      
-      
+    - name: jenkins apt src
+      command: sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
 
-      
-      
+    - name: install jenkins
+      apt: name=jenkins update_cache=yes
 
-      
-
-
-      
-      
-      
