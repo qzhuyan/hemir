@@ -32,3 +32,5 @@
     - name: install jenkins
       apt: name=jenkins update_cache=yes
 
+    - name: jenkins run docker 
+      user: name=jenkins groups=docker
