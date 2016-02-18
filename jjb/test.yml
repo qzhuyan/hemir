@@ -1,12 +1,22 @@
 - job:
-    name: function-test
-    display-name: function-test
+    name: test-run
+    display-name: Run
     scm:
       - git:
           url: https://github.com/qzhuyan/hemir.git
           branches:
-            - origin/master
-          basedir: hemir
-            
+            - POC
+          skip-tag: true
+
+    triggers:
+      - pollscm:
+          cron: "H * * * * "
+      - timed: "H * * * * "
+          
     builders:
-      - shell: 'docker run -it --rm -u `id -u` -v $WORKSPACE:/workdir --entrypoint=/bin/bash vidiben/casperjs -c casperjs ./hemmirror.js '
+      - shell:
+          #!/bin/bash -xe
+          docker run -t --rm -u `id -u` \
+          -v ${WORKSPACE}:/workdir \
+          -w /workdir --entrypoint=/bin/bash vidiben/casperjs -c '. ./run.sh'
+
