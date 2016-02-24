@@ -10,13 +10,11 @@
 
     triggers:
       - pollscm:
-          cron: "H * * * * "
+          cron: "* * * * * "
       - timed: "H * * * * "
           
     builders:
       - shell:
           #!/bin/bash -xe
-          docker run -t --rm -u `id -u` \
-          -v ${WORKSPACE}:/workdir \
-          -w /workdir --entrypoint=/bin/bash vidiben/casperjs -c '. ./run.sh'
+          docker run -t --rm -u `id -u` -v ${WORKSPACE}:/workdir -w /workdir --entrypoint=/bin/bash vidiben/casperjs -c '. ./run.sh'
 

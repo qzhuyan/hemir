@@ -10,7 +10,7 @@ var url = casper.cli.get('url');
 var dir = url;
 
 casper.log('url is ' + url,'debug');
-delimiter='||';
+delimiter='|';
 
 casper.userAgent('Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
 casper.start(url,function() {
@@ -45,7 +45,7 @@ casper.then(function(){
     	var imgurl = srcList[i];
     	var shorturl = imgurl2local(imgurl);
     	casper.log("downloading\n" + imgurl,'debug');
-    	this.download(imgurl, dir + shorturl);
+    	this.download(imgurl, dir + '/' + shorturl);
     };
 });
 
