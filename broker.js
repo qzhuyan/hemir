@@ -1,7 +1,5 @@
 // scrape page from broker's website
 // option: --url='balalbalba
-
-
 var fs = require('fs');
 
 var casper = require('casper').create(

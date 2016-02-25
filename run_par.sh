@@ -14,7 +14,7 @@ worker() {
     res=$(casperjs ./h2b.js --url=$home);
     url=$(echo $res |  awk -F '|' '{print $3}')
     echo "broker url is $url"
-    timeout 10 casperjs ./broker.js --url=$url    
+    timeout 60 casperjs ./broker.js --url=$url    
 }
 
 test_job() {

@@ -7,7 +7,7 @@
           branches:
             - POC
           skip-tag: true
-
+          wipe-workspace: false
     triggers:
       - pollscm:
           cron: "* * * * * "
