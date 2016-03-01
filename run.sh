@@ -3,20 +3,24 @@
 count=$1
 homes=(`casperjs ./hemmirror.js`)
 num=${#homes[@]}
-
 echo "found $num homes";
+let half=$num/2
 
-i=1
-for h in "${homes[@]}";
-do
-    if [ $i -gt $count ]; then
-       exit 0;
-    else
-	res=$(casperjs ./h2b.js --url=$h);
-	url=$(echo $res |  awk -F '|' '{print $3}')
-	echo "broker url is $url"
-	timeout 10 casperjs ./broker.js --url=$url
-	let i+=1
-    fi
-done
 
+echo 'now split array'
+firsthalf=( "${homes[@]:1:$half}" )
+sechalf=( "${homes[@]:$half:$num}" )
+
+echo "process 1 would handle ${#firsthalf[@]}"
+echo "process 2 would handle ${#sechalf[@]}"
+
+part1="${firsthalf[@]}"
+part2="${sechalf[@]}"
+
+casperjs ./scrap_hemurl.js --hems="$part1" & 
+pid_part1=$!
+casperjs ./scrap_hemurl.js --hems="$part2" & 
+pid_part2=$!
+
+wait $pid_part1
+wait $pid_part2
