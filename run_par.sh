@@ -3,9 +3,8 @@ WORKERS=2
 SUPER=2
 homes=$(casperjs ./hemmirror.js)
 #homes=$(seq 1 100)
-
+homes=(`casperjs ./hemmirror.js`)
 num=${#homes[@]}
-
 echo "found $num homes";
 
 worker() {
@@ -22,9 +21,9 @@ test_job() {
 }
 
 bgjobs=()
-for h in $homes;
+for h in "${homes[@]}";
 do
-    if [ ${#bgjobs[@]} -gt $WORKERS ];
+    if [ ${#bgjobs[@]} -eq $WORKERS ];
     then
 	echo 'wait... '
 	wait ${bgjobs[0]}
