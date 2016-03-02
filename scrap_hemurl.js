@@ -3,8 +3,8 @@
 var fs = require('fs');
 
 var casper = require('casper').create(
-    { stepTimeout: 10000,
-      waitTimeout: 10000,
+    { stepTimeout: 20000,
+      waitTimeout: 20000,
       pageSettings: { webSecurityEnabled: false },
       onStepTimeout: function(self,m){
       	  console.log('timeout: step' + m);
@@ -28,10 +28,7 @@ function imgurl2local(url) {
     }
 }
 
-casper.echo('urls are ' + urls);
-
 function save_imgs(dir) {
-    casper.echo('save imgs...')
     var srcList = [];
     srcList = casper.evaluate(function(){
 	var images = document.getElementsByTagName('img');
@@ -56,14 +53,12 @@ function save_imgs(dir) {
 }
 
 function save_html(dir) {
-    casper.echo('save html...')
     var html = casper.getPageContent();
     var f = fs.open(dir + '/index.html', 'w');
     f.write(html);
     f.close();
     var broker = casper.getElementAttribute('a[class="button right"]','href');
     if (broker && ! (broker.indexOf(".erikolsson.se") >= 0)) {
-	casper.echo("broker url is " + broker);
 	casper.then(function() {scrap_hem_page(broker)})
     }
 }
