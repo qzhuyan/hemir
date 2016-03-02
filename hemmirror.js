@@ -24,23 +24,23 @@ casper.start('http://hemnet.se', function() {
     casper.viewport(1500, 1080);
     this.mouseEvent('click', 'a[class="dropdowns-action"]');
     this.fillXPath('form[action="/sok/create"]', {
-	'//select[@id="search_region_id"]': '17744', //stockholm
-	//'//input[@id="search_municipality_ids_18028"]': true //solna
+	//'//select[@id="search_region_id"]': '17744', //stockholm
+	'//input[@id="search_municipality_ids_18028"]': true //solna
     },false);
 
     this.mouseEvent('click', 'button[name="commit"]');
+    
 });
 
 casper.then(follow_next_button);
 
 casper.run(function() {
-    this.log(links.length + ' links found:','info');
     links = links.map(function(link) {
 	return 'http://www.hemnet.se' + link
     });
-    this.echo(links.join('\n'));
 
     var len = links.length;
+    this.echo('@@@@ ' + len + ' @@@@ links found:');
     
     var data1 = links.slice(0,len/2).join('\n');
     this.echo("\n==================\n");
