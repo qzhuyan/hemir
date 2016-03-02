@@ -1,6 +1,6 @@
 var casper = require('casper').create();
 var links = [];
-
+var fs = require('fs');
 function getLinks() {
     var links = document.querySelectorAll('.item-link-container');
     return Array.prototype.map.call(links, function(e) {
@@ -35,13 +35,26 @@ casper.then(follow_next_button);
 
 casper.run(function() {
     this.log(links.length + ' links found:','info');
-
     links = links.map(function(link) {
 	return 'http://www.hemnet.se' + link
     });
-
     this.echo(links.join('\n'));
+
+    var len = links.length;
     
+    var data1 = links.slice(0,len/2).join('\n');
+    this.echo("\n==================\n");
+    this.echo(data1);
+    var f = fs.open('./1.data','w');
+    f.write(data1);
+    f.close();
+    
+    this.echo("\nxxxxxxxxxxxxxxxxxxxx\n");
+    var data2 = links.slice(len/2+1,len).join('\n');
+    this.echo(data2);
+    var f = fs.open('./2.data','w');
+    f.write(data2);
+    f.close();
     this.exit();
 
 });

@@ -14,11 +14,18 @@ var casper = require('casper').create(
 
 casper.userAgent('Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
 
-var urls = casper.cli.get('hems').split(' ');
+//var urls = casper.cli.get('hems').split(' ');
 
+var datafile = casper.cli.get('data')
+var urls  = fs.read(datafile).split('\n')
 
 function imgurl2local(url) {
-    return url.substr(url.lastIndexOf('/') + 1);
+    if (url.slice(-1) == '/') {
+	url = url.slice(0,-1)
+	return url.substr(url.lastIndexOf('/') + 1);
+    } else {
+	return url.substr(url.lastIndexOf('/') + 1);
+    }
 }
 
 casper.echo('urls are ' + urls);
@@ -30,16 +37,19 @@ function save_imgs(dir) {
 	var images = document.getElementsByTagName('img');
 	var res = [];
 	for(var i = 0; i < images.length; i++) {
-	    var raw = images[i].src;
-	    res.push(raw);
-	    //images[i].src = imgurl2local(raw);
+	    var raw = images[i].src 
+	    if (raw != '') {
+		res.push(raw);
+	    } else {
+		casper.echo("!!!!!! cannot find src for image !!!")
+	    }
 	}
 	return res;
     });
     for(var i=0 ; i<srcList.length; i++) {
     	var imgurl = srcList[i];
     	var shorturl = imgurl2local(imgurl);
-    	casper.log("downloading\n" + imgurl,'debug');
+    	casper.log("downloading\n" + imgurl ,'debug');
     	casper.download(imgurl, dir + '/' + shorturl);
     };
     casper.then(function() {save_html(dir)})
