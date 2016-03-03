@@ -24,8 +24,8 @@ casper.start('http://hemnet.se', function() {
     casper.viewport(1500, 1080);
     this.mouseEvent('click', 'a[class="dropdowns-action"]');
     this.fillXPath('form[action="/sok/create"]', {
-	'//select[@id="search_region_id"]': '17744', //stockholm
-	//'//input[@id="search_municipality_ids_18028"]': true //solna
+	//'//select[@id="search_region_id"]': '17744', //stockholm
+	'//input[@id="search_municipality_ids_18028"]': true //solna
     },false);
 
     this.mouseEvent('click', 'button[name="commit"]');
@@ -42,18 +42,19 @@ casper.run(function() {
     var len = links.length;
     this.echo('@@@@ ' + len + ' @@@@ links found:');
     
-    var data1 = links.slice(0,len/2).join('\n');
-    this.echo("\n==================\n");
-    this.echo(data1);
+    // var data1 = links.slice(0,len/2).join('\n');
+    // this.echo("\n==================\n");
+    // this.echo(data1);
     var f = fs.open('./1.data','w');
-    f.write(data1);
-    f.close();
+    // f.write(data1);
+    // f.close();
     
-    this.echo("\nxxxxxxxxxxxxxxxxxxxx\n");
-    var data2 = links.slice(len/2+1,len).join('\n');
-    this.echo(data2);
-    var f = fs.open('./2.data','w');
-    f.write(data2);
+    // this.echo("\nxxxxxxxxxxxxxxxxxxxx\n");
+    // var data2 = links.slice(len/2+1,len).join('\n');
+    // this.echo(data2);
+    // var f = fs.open('./2.data','w');
+    // f.write(data2);
+    f.write(link.join('\n'));
     f.close();
     this.exit();
 
