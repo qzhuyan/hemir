@@ -54,7 +54,7 @@ casper.run(function() {
     // this.echo(data2);
     // var f = fs.open('./2.data','w');
     // f.write(data2);
-    f.write(link.join('\n'));
+    f.write(links.join('\n'));
     f.close();
     this.exit();
 
