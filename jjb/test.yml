@@ -16,5 +16,5 @@
     builders:
       - shell:
           #!/bin/bash -xe
-          docker run -t --rm -u `id -u` -v ${WORKSPACE}:/workdir -w /workdir --entrypoint=/bin/bash vidiben/casperjs -c '. ./run_jobs.sh'
+          docker run -t --rm -u `id -u` -v /tmp/:/tmp/ -v ${WORKSPACE}:/workdir -w /workdir --entrypoint=/bin/bash vidiben/casperjs -c '. ./run_jobs.sh'
 

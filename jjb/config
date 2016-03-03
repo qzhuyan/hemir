@@ -1,3 +1,3 @@
 [jenkins]
-url=http://192.168.0.18:8080
+url=http://192.168.0.10:8080
 query_plugins_info=False

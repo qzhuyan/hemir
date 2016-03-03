@@ -5,7 +5,11 @@ var fs = require('fs');
 var casper = require('casper').create(
     { stepTimeout: 20000,
       waitTimeout: 20000,
-      pageSettings: { webSecurityEnabled: false },
+      pageSettings: {
+	  loadImages:  false,        // do not load images
+          loadPlugins: false,         // do not load NPAPI plugins (Flash, Silverlight, ...)
+	  webSecurityEnabled: false },
+
       onStepTimeout: function(self,m){
       	  console.log('timeout: step' + m);
       }
