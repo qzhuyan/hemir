@@ -15,7 +15,7 @@ do
 	res=$(casperjs ./h2b.js --url=$h);
 	url=$(echo $res |  awk -F '|' '{print $3}')
 	echo "broker url is $url"
-	timeout 10 casperjs ./broker.js --url=$url
+	casperjs ./broker.js --url=$url
 	let i+=1
     fi
 done
