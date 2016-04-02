@@ -24,8 +24,8 @@ wait_for_worker()
     bgs=$(jobs -p |grep -v Done | wc -l)
     if [ $bgs -ge $WORKERS ];
     then
-       echo "$bgs workers in bg, wait ..."
-       sleep 1;
+       #echo "$bgs workers in bg, wait ..."
+       sleep 2;
        wait_for_worker
     else
 	echo "$bgs workers in bg, conti.."
