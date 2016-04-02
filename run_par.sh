@@ -1,8 +1,5 @@
 #!/bin/bash 
-WORKERS=2
-SUPER=2
-homes=$(casperjs ./hemmirror.js)
-#homes=$(seq 1 100)
+WORKERS=${1:-2}
 homes=(`casperjs ./hemmirror.js`)
 num=${#homes[@]}
 echo "found $num homes";
