@@ -16,5 +16,5 @@
     builders:
       - shell:
           #!/bin/bash -xe
-          docker run -t --rm -u `id -u` -v ${WORKSPACE}:/workdir -w /workdir --entrypoint=/bin/bash qzhuyan/casperjs -c '. ./run.sh 10000' 
+          docker run -t --rm -u `id -u` -v ${WORKSPACE}:/workdir -w /workdir --entrypoint=/bin/bash qzhuyan/casperjs -c '. ./run_par.sh 2' 
 
