@@ -5,7 +5,7 @@
       - git:
           url: https://github.com/qzhuyan/hemir.git
           branches:
-            - large
+            - par_small
           skip-tag: true
           wipe-workspace: false
     triggers:
