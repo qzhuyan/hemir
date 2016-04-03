@@ -3,7 +3,10 @@
 var fs = require('fs');
 
 var casper = require('casper').create(
-    { pageSettings: { webSecurityEnabled: false }} );
+    { pageSettings: { webSecurityEnabled: false ,
+		      loadImages: false,
+		      loadPlugins: false
+		    }} );
 
 casper.options.waitTimeout = 10000;
 
