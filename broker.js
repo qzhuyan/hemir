@@ -19,10 +19,10 @@ casper.log('url is ' + url,'debug');
 casper.userAgent('Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
 
 casper.start(url, function afterStart() {
-    casper.log("start loading "+url, 'error')
-    this.capture('foo', undefined, {
-        format: 'jpg',
-        quality: 75})
+    // casper.log("start loading "+url, 'debug');
+    // this.capture('foo', undefined, {
+    //     format: 'jpg',
+    //     quality: 75});
 });
 
 function imgurl2local(url) {
@@ -30,7 +30,7 @@ function imgurl2local(url) {
 }
 
 casper.then(function(){
-    casper.log("start find images ", 'error')
+    casper.log("start find images ", 'debug');
     var srcList = [];
     srcList = this.evaluate(function(){
 	var images = document.getElementsByTagName('img');
@@ -42,11 +42,20 @@ casper.then(function(){
 	}
 	return res;
     });
+
     for(var i=0 ; i<srcList.length; i++) {
     	var imgurl = srcList[i];
     	var shorturl = imgurl2local(imgurl);
-    	casper.log("downloading\n" + imgurl,'debug');
-    	this.download(imgurl, dir + '/' +shorturl);
+	var filePath = dir + '/' +shorturl;
+	casper.log("working on: "+ filePath, 'debug');	
+	if (!fs.exists(filePath))
+	{
+	    casper.log("downloading\n" + imgurl,'debug');
+    	    this.download(imgurl, filePath);
+	} else {
+	    casper.log("skip downloading"+filePath,'debug');
+	}
+	
     };
 });
 
