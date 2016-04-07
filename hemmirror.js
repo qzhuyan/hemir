@@ -1,4 +1,8 @@
-var casper = require('casper').create();
+var casper = require('casper').create(
+    { pageSettings: { webSecurityEnabled: false ,
+		      loadImages: false,
+		      loadPlugins: false
+		    }} );
 var links = [];
 
 function getLinks() {
@@ -10,25 +14,52 @@ function getLinks() {
 }
 
 var follow_next_button = function() {
+    casper.capture('hemnet2.jpg',{
+        top: 100,
+        left: 100,
+        width: 1024,
+        height: 1024
+    });
+
     links = links.concat(this.evaluate(getLinks));
     if (this.exists('a[class="next_page button button--primary"]'))
     {
 	this.thenClick('a[class="next_page button button--primary"]',
-		       function() {this.then(follow_next_button);});
+		       function() { this.then(follow_next_button);});
     } else {
 	this.log("follow button finished!",'debug');
     }
 };
 
+
+// casper.options.onResourceRequested = function(casper, requestData, request)
+// {
+//     request.abort();
+// }
+
 casper.start('http://hemnet.se', function() {
     casper.viewport(1500, 1080);
+
     this.mouseEvent('click', 'a[class="dropdowns-action"]');
-    this.fillXPath('form[action="/sok/create"]', {
+            casper.capture('hemnet.jpg',{
+        top: 100,
+        left: 100,
+        width: 1024,
+        height: 1024
+    });
+
+    this.fillXPath('form[action="/bostader"]', {
 	//'//select[@id="search_region_id"]': '17744', //stockholm
 	'//input[@id="search_municipality_ids_18028"]': true //solna
     },false);
+    casper.capture('hemnet2.jpg',{
+        top: 100,
+        left: 100,
+        width: 1024,
+        height: 1024
+    });
 
-    this.mouseEvent('click', 'button[name="commit"]');
+    this.mouseEvent('click', 'button[class="button button--primary js-submit-button right"]');
 });
 
 casper.then(follow_next_button);
