@@ -48,8 +48,8 @@ casper.start('http://hemnet.se', function() {
     this.mouseEvent('click', 'a[class="dropdowns-action"]');
 
     this.fillXPath('form[action="/bostader"]', {
-	//'//select[@id="search_region_id"]': '17744', //stockholm
-	'//input[@id="search_municipality_ids_18028"]': true //solna
+	'//select[@id="search_region_id"]': '17744', //stockholm
+	//'//input[@id="search_municipality_ids_18028"]': true //solna
     },false);
 
     this.mouseEvent('click', 'button[class="button button--primary js-submit-button right"]');
