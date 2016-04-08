@@ -25,7 +25,7 @@ wait_for_worker()
     if [ $bgs -ge $WORKERS ];
     then
        #echo "$bgs workers in bg, wait ..."
-       sleep 2;
+       sleep 1;
        wait_for_worker
     else
 	echo "$bgs workers in bg, conti.."
