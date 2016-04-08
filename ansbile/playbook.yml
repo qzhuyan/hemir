@@ -53,4 +53,9 @@
     - name: install python libs
       command: pip install bs4 elasticsearch
 
-      
+    - name: pull docker image elk
+      command: docker pull elasticsearch
+
+    - name: pull docker image kibana
+      command: docker pull kibana
+
