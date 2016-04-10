@@ -4,7 +4,7 @@ import re
 from urllib import unquote
 from datetime import datetime
 from elasticsearch import Elasticsearch
-es = Elasticsearch()
+es = Elasticsearch(host='192.168.0.33',port=9200)
 import os.path, time
 import json
 
@@ -91,7 +91,7 @@ class HemnetPage(BeautifulSoup):
     def send_to_elk(self):
         doc = self.to_doc()
         doc['file_mtime'] = self.file_mtime
-        res = es.index(index="hemmir", doc_type='hemnet', id=doc['id'], body=doc)
+        res = es.index(index="hemmirv1", doc_type='hemnet', id=doc['id'], body=doc)
         return res
     
     @staticmethod

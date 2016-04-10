@@ -49,10 +49,13 @@
 
     - name: restart jenkins
       service: name=jenkins state=restarted
+      
+    - name: apt install python-pip
+      apt: name=python-pip
 
     - name: install python libs
       command: pip install bs4 elasticsearch
-
+      
     - name: pull docker image elk
       command: docker pull elasticsearch
 

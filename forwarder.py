@@ -18,6 +18,6 @@ f = os.popen("""find %s -name '*index.html' """%(args.source_dir))
 htmls = f.read().split('\n')
 
 for h in htmls:
-    print "process " + h
+    print "processing " + h
     HemnetPage.from_file(h).send_to_elk()
     
