@@ -4,9 +4,28 @@ import re
 from urllib import unquote
 from datetime import datetime
 from elasticsearch import Elasticsearch
-es = Elasticsearch(host='192.168.0.33',port=9200)
+es = Elasticsearch(host='127.0.0.1',port=9200)
 import os.path, time
 import json
+
+def flatten_json(y):
+    out = {}
+
+    def flatten(x, name=''):
+        if type(x) is dict:
+            for a in x:
+                flatten(x[a], name + a + '_')
+        elif type(x) is list:
+            i = 0
+            for a in x:
+                flatten(a, name + str(i) + '_')
+                i += 1
+        else:
+            out[str(name[:-1])] = x
+                
+
+    flatten(y)
+    return out
 
 class HemnetPage(BeautifulSoup):
     """ translate hemnet html page data to json """
@@ -26,11 +45,11 @@ class HemnetPage(BeautifulSoup):
             brokerprop = dict()
             #todo: maybe we can narrow to class broker fist 
             ret = self.find(class_='broker')
-            brokerprop['broker'] = ret.p.b.string
-            brokerprop['broker_link'] = ret.find(class_='broker-link').get_text().strip()
-            brokerprop['broker_phone'] = ret.find(class_='phone-number').get_text().strip()
+            brokerprop['name'] = ret.p.b.string
+            brokerprop['link'] = ret.find(class_='broker-link').get_text().strip()
+            brokerprop['phone'] = ret.find(class_='phone-number').get_text().strip()
             ret = ret.find(class_='broker__email')
-            brokerprop['broker_email'] = unquote(ret['href'])
+            brokerprop['email'] = unquote(ret['href'])
 
             ret = self.find_all(class_='broker-link')
 
@@ -65,33 +84,31 @@ class HemnetPage(BeautifulSoup):
 #          dataLayer = [{"taxonomy":{"Sajt":"hemnet-se","Sektion":"objektsida"}},{"page":{"type":"standard"}},{"property":{"id":8680875,"broker_firm":"One Fastighetsm\u00e4kleri AB","foreign":false,"location":"Solna","locations":{"country":"Sverige","region":"Stockholms l\u00e4n","municipality":"Solna kommun","postal_city":"Solna","district":"R\u00e5sunda","street":"Vinterv\u00e4gen","city":"Stockholm"},"images_count":23,"new_production":false,"home_swapping":false,"offers_selling_price":true,"status":"for_sale","item_type":"Bostadsr\u00e4ttsl\u00e4genhet","main_location":"Solna","street_address":"Vinterv\u00e4gen 26, v\u00e5n 4","rooms":2.0,"living_area":45.0,"price_per_m2":64333,"price":2895000,"has_price_change":false,"borattavgift":2432,"upcoming_open_houses":true}}];
         try:
             datalayer = self.body.script.string.split('\n')[1].split('=')[1].strip().rstrip(';')
-            return datalayer
+            return json.loads(datalayer)
         except:
             return None
-
         
     # hope it is uid
     def get_id(self):
         try:
-            res = json.loads(self.get_datalayer())
+            res = self.get_datalayer()
             return res[2][u'property'][u'id']
         except:
             return None
     
     def to_doc(self):
-        return { 'id': self.get_id(),
+        z = { 'id': self.get_id(),
                  'timestamp': datetime.now(),
-                 'address': self.get_property_address(),
                  'stats':   self.get_property_stats(),
-                 'hemprop': self.get_hem_prop(),
                  'broker':  self.get_broker_prop(),
-                 'datalayer': self.get_datalayer()
-        }
+            }
+        z.update(self.get_datalayer()[2][u'property'])
+        return flatten_json(z)
 
-    def send_to_elk(self):
+    def send_to_elk(self, index = 'hemmirv1', doc_type='hemnet'):
         doc = self.to_doc()
         doc['file_mtime'] = self.file_mtime
-        res = es.index(index="hemmirv1", doc_type='hemnet', id=doc['id'], body=doc)
+        res = es.index(index=index, doc_type=doc_type, id=doc['id'], body=doc)
         return res
     
     @staticmethod
