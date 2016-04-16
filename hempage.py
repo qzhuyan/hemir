@@ -102,7 +102,10 @@ class HemnetPage(BeautifulSoup):
                  'stats':   self.get_property_stats(),
                  'broker':  self.get_broker_prop(),
             }
-        z.update(self.get_datalayer()[2][u'property'])
+        try:
+            z.update(self.get_datalayer()[2][u'property'])
+        except:
+            print "error: cannot update with property"
         return flatten_json(z)
 
     def send_to_elk(self, index = 'hemmirv1', doc_type='hemnet'):
