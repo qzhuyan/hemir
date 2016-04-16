@@ -72,8 +72,7 @@ class TestHemPage(unittest.TestCase):
 
     def test_send_to_elk(self):
         expected = 1
-        htmldata = open('test.html').read()
-        soup = HemnetPage(htmldata, 'html.parser')
+        soup = HemnetPage.from_file('test.html')
         res = soup.send_to_elk(index = 'unittest')
         self.assertEqual(expected, res[u'_shards'][u'successful'])        
 

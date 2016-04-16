@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from urllib import unquote
 from datetime import datetime
+from datetime import timedelta
 from elasticsearch import Elasticsearch
 es = Elasticsearch(host='127.0.0.1',port=9200)
 import os.path, time
@@ -26,6 +27,10 @@ def flatten_json(y):
 
     flatten(y)
     return out
+
+def days_passed(day1,day2):
+    day2 = time.strptime(day2.split('T')[0], "%Y-%m-%d")
+    return round((day1 - time.mktime(day2))/86400)
 
 class HemnetPage(BeautifulSoup):
     """ translate hemnet html page data to json """
@@ -110,15 +115,17 @@ class HemnetPage(BeautifulSoup):
 
     def send_to_elk(self, index = 'hemmirv1', doc_type='hemnet'):
         doc = self.to_doc()
-        doc['file_mtime'] = self.file_mtime
+        doc['file_mtime'] = time.ctime(self.file_mtime)
+        doc['daysOnHemnet'] = days_passed(self.file_mtime, doc['stats_start_date'])
         res = es.index(index=index, doc_type=doc_type, id=doc['id'], body=doc)
         return res
+
     
     @staticmethod
     def from_file(filepath):
         data = open(filepath).read()
         obj = HemnetPage(data, 'html.parser')
-        obj.file_mtime = time.ctime(os.path.getmtime(filepath))
+        obj.file_mtime = os.path.getmtime(filepath)
         return  obj
 
         
