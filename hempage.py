@@ -116,7 +116,8 @@ class HemnetPage(BeautifulSoup):
     def send_to_elk(self, index = 'hemmirv1', doc_type='hemnet'):
         doc = self.to_doc()
         doc['file_mtime'] = time.ctime(self.file_mtime)
-        doc['daysOnHemnet'] = days_passed(self.file_mtime, doc['stats_start_date'])
+        if  'stats_start_date' in doc:
+            doc['daysOnHemnet'] = days_passed(self.file_mtime, doc['stats_start_date'])
         res = es.index(index=index, doc_type=doc_type, id=doc['id'], body=doc)
         return res
 
