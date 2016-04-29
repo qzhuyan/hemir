@@ -55,7 +55,10 @@
 
     - name: install python libs
       command: pip install bs4 elasticsearch
-      
+
+    - name: install google clinet
+      command:  pip install --upgrade google-api-python-client
+
     - name: pull docker image elk
       command: docker pull elasticsearch
 

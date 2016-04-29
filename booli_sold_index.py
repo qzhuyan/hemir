@@ -5,7 +5,7 @@ import re
 from urllib import unquote
 from datetime import datetime
 from elasticsearch import Elasticsearch
-es = Elasticsearch(host='192.168.0.33',port=9200)
+es = Elasticsearch(host='127.0.0.1',port=9200)
 import os.path, time
 import json
 import inspect
@@ -21,11 +21,9 @@ class BooliSoldIndexPage(BeautifulSoup):
         obj.file_mtime = time.ctime(os.path.getmtime(filepath))
         return  obj
 
-
     def get_data_property(self):
         ress = self.find_all(has_data_property)
         return  ress
-
 
     def get_hem_prop(self):
         res = []
@@ -38,7 +36,7 @@ class BooliSoldIndexPage(BeautifulSoup):
         docs = self.get_hem_prop()
         for doc in docs:
             doc['timestamp'] = datetime.now(),
-            res = es.index(index="test1", doc_type='booli_sold', id=doc[u'id'], body=doc)
+            res = es.index(index="booli", doc_type='sold', id=doc[u'id'], body=doc)
         return res
 
 def to_doc(attrs):

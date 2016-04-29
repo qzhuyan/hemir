@@ -23,7 +23,6 @@ def flatten_json(y):
                 i += 1
         else:
             out[str(name[:-1])] = x
-                
 
     flatten(y)
     return out
@@ -102,25 +101,25 @@ class HemnetPage(BeautifulSoup):
             return None
     
     def to_doc(self):
-        z = { 'id': self.get_id(),
+        doc = { 'id': self.get_id(),
                  'timestamp': datetime.now(),
                  'stats':   self.get_property_stats(),
                  'broker':  self.get_broker_prop(),
             }
+        doc['file_mtime'] = time.ctime(self.file_mtime)
+        if  'stats_start_date' in doc:
+           doc['daysOnHemnet'] = days_passed(self.file_mtime, doc['stats_start_date'])
+
         try:
-            z.update(self.get_datalayer()[2][u'property'])
+            doc.update(self.get_datalayer()[2][u'property'])
         except:
             print "error: cannot update with property"
-        return flatten_json(z)
+        return flatten_json(doc)
 
     def send_to_elk(self, index = 'hemmirv1', doc_type='hemnet'):
         doc = self.to_doc()
-        doc['file_mtime'] = time.ctime(self.file_mtime)
-        if  'stats_start_date' in doc:
-            doc['daysOnHemnet'] = days_passed(self.file_mtime, doc['stats_start_date'])
         res = es.index(index=index, doc_type=doc_type, id=doc['id'], body=doc)
         return res
-
     
     @staticmethod
     def from_file(filepath):
